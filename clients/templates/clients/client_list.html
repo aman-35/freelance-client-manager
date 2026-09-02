@@ -12,6 +12,8 @@
           <h5 class="card-title">{{ client.name }}</h5>
           <p class="card-text text-muted">{{ client.email }}</p>
           <a href="{% url 'project_list' client.id %}" class="btn btn-sm btn-outline-primary">View Projects</a>
+          <a href="{% url 'client_update' client.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+          <a href="{% url 'client_delete' client.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
         </div>
       </div>
     </div>

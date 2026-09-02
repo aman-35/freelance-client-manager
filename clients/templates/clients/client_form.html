@@ -1,6 +1,6 @@
 {% extends 'clients/base.html' %}
 {% block content %}
-<h2 class="mb-4">Add Client</h2>
+<h2 class="mb-4">{% if client %}Edit Client{% else %}Add Client{% endif %}</h2>
 <form method="post">
     {% csrf_token %}
     {% for field in form %}

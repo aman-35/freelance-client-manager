@@ -1,0 +1,12 @@
+{% extends 'clients/base.html' %}
+{% block content %}
+<h2 class="mb-4">Delete Client</h2>
+<div class="alert alert-warning">
+    Are you sure you want to delete <strong>{{ client.name }}</strong>? This will also delete all their projects and tasks.
+</div>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a href="{% url 'client_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

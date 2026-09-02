@@ -6,6 +6,12 @@ from .models import Client, Project, Task
 from .forms import ClientForm, ProjectForm, TaskForm
 
 
+def home(request):
+    if request.user.is_authenticated:
+        return redirect('client_list')
+    return render(request, 'clients/home.html')
+
+
 def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -92,4 +98,26 @@ def task_toggle(request, task_id):
     task = get_object_or_404(Task, id=task_id, project__client__owner=request.user)
     task.completed = not task.completed
     task.save()
+
+
+@login_required
+def client_update(request, client_id):
+    client = get_object_or_404(Client, id=client_id, owner=request.user)
+    if request.method == 'POST':
+        form = ClientForm(request.POST, instance=client)
+        if form.is_valid():
+            form.save()
+            return redirect('client_list')
+    else:
+        form = ClientForm(instance=client)
+    return render(request, 'clients/client_form.html', {'form': form, 'client': client})
+
+
+@login_required
+def client_delete(request, client_id):
+    client = get_object_or_404(Client, id=client_id, owner=request.user)
+    if request.method == 'POST':
+        client.delete()
+        return redirect('client_list')
+    return render(request, 'clients/client_confirm_delete.html', {'client': client})
     return redirect('task_list', project_id=task.project.id)

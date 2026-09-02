@@ -70,6 +70,28 @@ def project_create(request, client_id):
         form = ProjectForm()
     return render(request, 'clients/project_form.html', {'form': form, 'client': client})
 
+@login_required
+def project_update(request, project_id):
+    project = get_object_or_404(Project, id=project_id, client__owner=request.user)
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, instance=project)
+        if form.is_valid():
+            form.save()
+            return redirect('project_list', client_id=project.client.id)
+    else:
+        form = ProjectForm(instance=project)
+    return render(request, 'clients/project_form.html', {'form': form, 'client': project.client, 'project': project})
+
+
+@login_required
+def project_delete(request, project_id):
+    project = get_object_or_404(Project, id=project_id, client__owner=request.user)
+    client_id = project.client.id
+    if request.method == 'POST':
+        project.delete()
+        return redirect('project_list', client_id=client_id)
+    return render(request, 'clients/project_confirm_delete.html', {'project': project})
+
 
 @login_required
 def task_list(request, project_id):
@@ -99,6 +121,28 @@ def task_toggle(request, task_id):
     task.completed = not task.completed
     task.save()
 
+
+@login_required
+def task_update(request, task_id):
+    task = get_object_or_404(Task, id=task_id, project__client__owner=request.user)
+    if request.method == 'POST':
+        form = TaskForm(request.POST, instance=task)
+        if form.is_valid():
+            form.save()
+            return redirect('task_list', project_id=task.project.id)
+    else:
+        form = TaskForm(instance=task)
+    return render(request, 'clients/task_form.html', {'form': form, 'project': task.project, 'task': task})
+
+
+@login_required
+def task_delete(request, task_id):
+    task = get_object_or_404(Task, id=task_id, project__client__owner=request.user)
+    project_id = task.project.id
+    if request.method == 'POST':
+        task.delete()
+        return redirect('task_list', project_id=project_id)
+    return render(request, 'clients/task_confirm_delete.html', {'task': task})
 
 @login_required
 def client_update(request, client_id):

@@ -1,6 +1,6 @@
 {% extends 'clients/base.html' %}
 {% block content %}
-<h2 class="mb-4">Add Task for {{ project.title }}</h2>
+<h2 class="mb-4">{% if task %}Edit Task{% else %}Add Task for {{ project.title }}{% endif %}</h2>
 <form method="post">
     {% csrf_token %}
     {% for field in form %}
